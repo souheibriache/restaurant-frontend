@@ -30,6 +30,14 @@ const UserNameMenu = () => {
             User profile
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            to="/user-restaurant"
+            className="font-bold hover:text-orange-500"
+          >
+            User Restaurant
+          </Link>
+        </DropdownMenuItem>
         <Separator />
 
         <DropdownMenuItem>
