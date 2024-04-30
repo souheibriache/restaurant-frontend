@@ -24,7 +24,7 @@ const UserNameMenu = () => {
         )}
         {user?.email}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="p-3 px-10 flex flex-col gap-3 bg-white rounded shadow-l">
+      <DropdownMenuContent className="-z-50 p-3 px-10 flex flex-col gap-3 bg-slate-500 rounded shadow-l">
         <DropdownMenuItem>
           <Link to="/user-profile" className="font-bold hover:text-orange-500">
             User profile
