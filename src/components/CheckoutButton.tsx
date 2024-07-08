@@ -1,5 +1,4 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import LoadingButton from "./LoadingButton";
 import UserProfileForm, {
@@ -7,6 +6,7 @@ import UserProfileForm, {
 } from "@/forms/user-profile-forms/UserProfileForm";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { useGetMyUser } from "@/api/MyUserApi";
+import { useAuth } from "@/modules/auth/AuthProvider";
 
 type Props = {
   onCheckout: (userFormData: UserFormData) => void;
@@ -15,20 +15,24 @@ type Props = {
 };
 
 const CheckoutButton = ({ onCheckout, disabled, isLoading }: Props) => {
-  const {
-    isAuthenticated,
-    isLoading: isAuthLoading,
-    loginWithRedirect,
-  } = useAuth0();
-  const { pathname } = useLocation();
+  // const {
+  //   isAuthenticated,
+  //   isLoading: isAuthLoading,
+  //   loginWithRedirect,
+  // } = useAuth0();
+
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
 
   const { currentUser, isLoading: isGetUserLoading } = useGetMyUser();
+
+  const navigate = useNavigate();
   const onLogin = async () => {
-    await loginWithRedirect({
-      appState: {
-        returnTo: pathname,
-      },
-    });
+    // await loginWithRedirect({
+    //   appState: {
+    //     returnTo: pathname,
+    //   },
+    // });
+    navigate({ pathname: "/login" });
   };
 
   if (!isAuthenticated) {

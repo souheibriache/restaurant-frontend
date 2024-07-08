@@ -8,11 +8,9 @@ import {
 } from "./ui/sheet";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
-import { useAuth0 } from "@auth0/auth0-react";
 import MobileNavLinks from "./MobileNavLinks";
 
 const MobileNav = () => {
-  const { isAuthenticated, loginWithRedirect, user } = useAuth0();
   return (
     <Sheet>
       <SheetTrigger>
@@ -20,17 +18,18 @@ const MobileNav = () => {
       </SheetTrigger>
       <SheetContent className="space-y-3">
         <SheetTitle>
-          {isAuthenticated ? (
+          {false ? (
             <span className="flex items-center font-bold gap-2">
-              {user?.picture ? (
+              {/* {user?.picture ? ( */}
+              {false ? (
                 <img
-                  src={user.picture}
+                  src={"user.picture"}
                   className="shadow max-w-10 rounded-full h-auto align-middle border-none"
                 />
               ) : (
                 <CircleUserRound className="text-orange-500" />
               )}
-              {user?.email}
+              {"user?.email"}
             </span>
           ) : (
             <span>Welcome to MernEat.com</span>
@@ -38,11 +37,11 @@ const MobileNav = () => {
         </SheetTitle>
         <Separator />
         <SheetDescription className="flex flex-col gap-4">
-          {isAuthenticated ? (
+          {false ? (
             <MobileNavLinks />
           ) : (
             <Button
-              onClick={async () => loginWithRedirect()}
+              onClick={async () => {}}
               className="flex-1 font-bold bg-orange-500"
             >
               Log In

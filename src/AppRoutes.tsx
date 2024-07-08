@@ -1,12 +1,15 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./layouts/layout";
 import HomePage from "./pages/HomePage";
-import AuthCallbackPage from "./pages/AuthCallbackPage";
+// import AuthCallbackPage from "./pages/AuthCallbackPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import ManageRestaurantPage from "./pages/ManageRestaurantPage";
 import SearchPage from "./pages/SearchPage";
 import RestaurantDetails from "./pages/RestaurantDetails";
+import OrderStatusPage from "./pages/OrderStatusPage";
+import RegisterUserPage from "./pages/RegisterUserPage";
+import LoginPage from "./pages/LoginPage";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -18,7 +21,7 @@ const AppRoutes = () => {
           </Layout>
         }
       />
-      <Route path="/auth-callbacl" element={<AuthCallbackPage />} />
+      {/* <Route path="/auth-callback" element={<AuthCallbackPage />} /> */}
       <Route
         path="/search/:city"
         element={
@@ -51,6 +54,33 @@ const AppRoutes = () => {
         element={
           <Layout>
             <RestaurantDetails />
+          </Layout>
+        }
+      />
+
+      <Route
+        path="/order-status"
+        element={
+          <Layout>
+            <OrderStatusPage />
+          </Layout>
+        }
+      />
+
+      <Route
+        path="/register"
+        element={
+          <Layout>
+            <RegisterUserPage />
+          </Layout>
+        }
+      />
+
+      <Route
+        path="/login"
+        element={
+          <Layout>
+            <LoginPage />
           </Layout>
         }
       />

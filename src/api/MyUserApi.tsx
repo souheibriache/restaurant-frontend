@@ -1,5 +1,6 @@
+import { getToken } from "@/lib/auth";
+import { useAuth } from "@/modules/auth/AuthProvider";
 import { User } from "@/types";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation, useQuery } from "react-query";
 import { toast } from "sonner";
 
@@ -13,9 +14,10 @@ type CreateUserRequest = {
 };
 
 export const useGetMyUser = () => {
-  const { getAccessTokenSilently } = useAuth0();
-  const getMyUserRequest = async (): Promise<User> => {
-    const accessToken = await getAccessTokenSilently();
+  const getMyUserRequest = async (): Promise<User | null> => {
+    console.log("GET MY USER HOOK");
+    const accessToken = localStorage.getItem("token");
+    if (!accessToken) return null;
     console.log({ accessToken });
     const response = await fetch(`${API_BASE_URL}/api/my/user`, {
       method: "GET",
@@ -47,15 +49,88 @@ export const useGetMyUser = () => {
   };
 };
 
-export const useCreateMyUser = () => {
-  const { getAccessTokenSilently } = useAuth0();
+export type RegisterUserRequest = {
+  email: string;
+  password: string;
+  name: string;
+};
 
+export type LoginUserRequest = {
+  email: string;
+  password: string;
+};
+
+export const useRegisterUser = () => {
+  const registerUser = async (registerUserData: RegisterUserRequest) => {
+    const response = await fetch(`${API_BASE_URL}/api/my/user/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(registerUserData),
+    });
+    if (!response.ok) throw new Error("Unable to craate User");
+    const jsonResponse = await response.json();
+    console.log({ jsonResponse });
+    localStorage.setItem("accessToken", jsonResponse.accessToken);
+    return jsonResponse;
+  };
+
+  const {
+    error,
+    mutateAsync: registerUserRequest,
+    isLoading,
+    isSuccess,
+    reset,
+  } = useMutation(registerUser);
+  if (error) {
+    toast.error(error.toString());
+    reset();
+  }
+  return { isLoading, registerUserRequest, isSuccess };
+};
+
+export const useLoginUser = () => {
+  const { storeToken } = useAuth();
+  const loginUser = async (loginUserData: LoginUserRequest) => {
+    console.log(import.meta.env);
+
+    const response = await fetch(`${API_BASE_URL}/api/my/user/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginUserData),
+    });
+    if (!response) throw new Error("Unable to login User");
+    return response.json();
+  };
+
+  const {
+    error,
+    mutateAsync: loginUserRequest,
+    isLoading,
+    reset,
+  } = useMutation({
+    mutationFn: loginUser,
+    onSuccess: async (data) => {
+      await storeToken(data.accessToken);
+      console.log(data);
+      await getToken();
+    },
+  });
+  if (error) {
+    toast.error(error.toString());
+    reset();
+  }
+  return { isLoading, loginUserRequest };
+};
+
+export const useCreateMyUser = () => {
   const createMyUserRequest = async (user: CreateUserRequest) => {
-    const accesstoken: string = await getAccessTokenSilently();
     const response = await fetch(`${API_BASE_URL}/api/my/user`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${accesstoken}`,
         "Content-type": "application/json",
       },
       body: JSON.stringify(user),
@@ -88,10 +163,8 @@ type UpdateMyUserRequest = {
 };
 
 export const useUpdateMyUser = () => {
-  const { getAccessTokenSilently } = useAuth0();
-
   const updateMyUserRequest = async (formData: UpdateMyUserRequest) => {
-    const accessToken = await getAccessTokenSilently();
+    const accessToken = localStorage.getItem("token");
     const response = await fetch(`${API_BASE_URL}/api/my/user`, {
       method: "PUT",
       headers: {
